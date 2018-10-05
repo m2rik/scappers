@@ -1,0 +1,29 @@
+{
+    "sports": [
+        {
+            "name": "soccer",
+            "leagues": [
+                "bundesliga",
+                "champions-league",
+                "epl",
+                "ita-serie-a",
+                "la-liga",
+                "liga-mx",
+                "ligue-1",
+                "mls"
+            ]
+        },
+        {
+            "name": "nfl",
+            "leagues": [ "" ]
+        },
+        {
+            "name": "nba",
+            "leagues": [ "" ]
+        },
+        {
+            "name": "ncaaf",
+            "leagues": [ "" ]
+        }
+    ]
+}
