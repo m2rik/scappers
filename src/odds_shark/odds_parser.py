@@ -9,12 +9,7 @@ class OddsParser:
         self.soup = BeautifulSoup(content, 'html.parser')
 
     def parse(self):
-        
-        books = self.get_books()
-        games = self.get_games()
-        lines = self.get_lines(games)
-
-        return books, games, lines
+        return self.get_books(), self.get_games(), self.get_lines(games)
     
     def get_books(self):   
         return [

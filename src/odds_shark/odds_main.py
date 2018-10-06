@@ -70,14 +70,14 @@ if __name__ == "__main__":
     
     number_of_parameters = len(sys.argv)
 
-    if number_of_parameters > 1 or number_of_parameters == 2:
+    if number_of_parameters > 1:
         configuration_directory = sys.argv[1]
     else:
         configuration_directory = r'.\configs\odds_shark'
 
-    if number_of_parameters == 3:
+    if number_of_parameters > 2:
         output_directory = sys.argv[2]
     else:
-        output_directory = r'.\data\odds_shark'
+        output_directory = r'.\data\odds_shark\import'
 
     scrap(configuration_directory, output_directory)
