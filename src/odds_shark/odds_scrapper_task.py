@@ -8,8 +8,9 @@ class OddsSharkScrapperTask(luigi.Task):
     
 
     def output(self):
+        directory = './data/odds_shark/downloaded'
         parameter = odds_helpers.convert_date_to_filename(self.now)
-        local_path = './data/odds_shark/downloaded/{}.json'.format(parameter)
+        local_path = '{}/{}.json'.format(directory, parameter)
         return luigi.LocalTarget(local_path)
 
 

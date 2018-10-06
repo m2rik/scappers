@@ -6,7 +6,7 @@ import odds_helpers
 import odds_scrapper_task
 
 class OddsSharkSplitterTask(luigi.Task):
-    sync_id = str(datetime.datetime.now())    
+    sync_id = str(datetime.datetime.now())
 
 
     def requires(self):
@@ -24,7 +24,8 @@ class OddsSharkSplitterTask(luigi.Task):
 
         parameter = odds_helpers.convert_date_to_filename(self.sync_id)
 
-        with open('./data/odds_shark/books/{}.json'.format(parameter), 'w') as outfile:
+        books_target = luigi.LocalTarget('./data/odds_shark/books/{}.json'.format(parameter))
+        with books_target.open('w') as outfile:
             json.dump(sync['books'], outfile)
 
         for entry in sync['sport_leagues']:
@@ -35,15 +36,17 @@ class OddsSharkSplitterTask(luigi.Task):
             if len(league) > 0:
                 output_file = '{}_{}_{}.json'.format(sport, league, parameter)
             
-            with open(r'./data/odds_shark/games/{}'.format(output_file), 'w') as outfile:
+            games_target = luigi.LocalTarget('./data/odds_shark/games/{}'.format(output_file))
+            with games_target.open('w') as outfile:
                 json.dump(entry['games'], outfile)
 
-            with open(r'./data/odds_shark/lines/{}'.format(output_file), 'w') as outfile:
+            lines_target = luigi.LocalTarget('./data/odds_shark/lines/{}'.format(output_file))
+            with lines_target.open('w') as outfile:
                 json.dump(entry['game_lines'], outfile)
+        
 
         ## completed,
         input_path.remove()
-
 
 
 if __name__ == '__main__':
