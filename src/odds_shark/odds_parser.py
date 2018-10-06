@@ -9,7 +9,8 @@ class OddsParser:
         self.soup = BeautifulSoup(content, 'html.parser')
 
     def parse(self):
-        return self.get_books(), self.get_games(), self.get_lines(games)
+        games = self.get_games()
+        return self.get_books(), games, self.get_lines(games)
     
     def get_books(self):   
         return [
@@ -73,7 +74,7 @@ class OddsParser:
                 last_month = month
                 
                 day  = pad_number(int(date_parts[2]))
-                date = '{}-{}-{}'.format(year, day, month)
+                date = '{}-{}-{}'.format(year, month, day)
 
             if 'op-matchup-wrapper' in cls:
 

@@ -4,7 +4,7 @@ import requests
 import datetime
 import odds_parser
 
-def scrap(configuration_directory, output_directory):
+def scrap(configuration):
 
     def get_uri(sport, league):
         uri = r'https://www.oddsshark.com/{}/'.format(sport)
@@ -18,13 +18,7 @@ def scrap(configuration_directory, output_directory):
                 cached_books.append(op_book)
         return cached_books
 
-    configuration = {}
-    configuration_path = r'{}\config.json'.format(configuration_directory)
-    with open(configuration_path, 'r') as config_output:
-        configuration = json.loads(config_output.read())
-
     sync = {
-        'id': str(datetime.datetime.now()),
         'books': [],
         'sport_leagues': []
     }
@@ -57,27 +51,20 @@ def scrap(configuration_directory, output_directory):
 
             sync['sport_leagues'].append(sport_league_sync)
 
-
-
-    file = sync['id'].replace(' ', '_').replace(':', '_').replace('.', '_')
-    path = '{}\{}.json'.format(output_directory, file)
-    with open(path, 'w') as sync_output:
-        json.dump(sync, sync_output)
+    return sync
 
 
 
-if __name__ == "__main__":
-    
-    number_of_parameters = len(sys.argv)
+def load_configuration(configuration_directory):
+    configuration = {}
+    configuration_path = r'{}\config.json'.format(configuration_directory)
+    with open(configuration_path, 'r') as config_output:
+        configuration = json.loads(config_output.read())
+    return configuration
 
-    if number_of_parameters > 1:
-        configuration_directory = sys.argv[1]
-    else:
-        configuration_directory = r'.\configs\odds_shark'
 
-    if number_of_parameters > 2:
-        output_directory = sys.argv[2]
-    else:
-        output_directory = r'.\data\odds_shark\import'
 
-    scrap(configuration_directory, output_directory)
+def convert_date_to_filename(date):
+    return date.replace(' ', '_').replace(':', '_').replace('.', '_')
+
+
