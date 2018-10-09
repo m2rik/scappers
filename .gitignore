@@ -1,4 +1,5 @@
 
 data/*
 src/*/__pycache__/*
+
 configs/reddit/config.json
