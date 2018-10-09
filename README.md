@@ -10,4 +10,4 @@ ratingraph:
 
 reddit:
  - task to download
-    - python .\src\reddit\reddit_aggregate_task.py --local-scheduler RedditAggregateTask --subreddit KUWTK --start 1538956800
+    - python .\src\reddit\crawl_subreddits_task.py --local-scheduler CrawlSubredditsTask --subreddits-to-crawl KUWTK|kardashians

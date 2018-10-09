@@ -1,13 +1,5 @@
-import json
 import pandas
-import datetime
-
-
-def remove_new_lines(text):
-    assert type(text) == str
-
-    return text.replace('\r\n', '\n').replace('\r', '\n').replace('\n', ' ').encode('ascii', 'ignore').decode('ascii')
-
+import helpers
 
 def get_author(author):
     if author == None:
@@ -20,23 +12,7 @@ def get_start(subreddit):
     return subreddit.created_utc
 
 
-def give_me_intervals(start_at):
-    full_day = 86400
-    period = (full_day * 3)
-
-    end_at = int(datetime.datetime.utcnow().timestamp())
-
-    end = start_at + period
-    yield (start_at, end)
-
-    padding = 1
-    while end <= end_at:
-        start_at = end + padding
-        end = (start_at - padding) + period
-        yield (start_at, end)
-	
-
-def get_submission(submission, interval):
+def get_submission(submission):
     return {
         'approved_at_utc'         : getattr(submission, 'approved_at_utc', None),
         'approved_by'             : getattr(submission, 'approved_by', None),
@@ -90,12 +66,12 @@ def get_submission(submission, interval):
         'saved'                   : getattr(submission, 'saved', None),
         'score'                   : getattr(submission, 'score', None),
         'secure_media'            : getattr(submission, 'secure_media', None),
-        'selftext'                : remove_new_lines(getattr(submission, 'selftext', '')),
+        'selftext'                : helpers.remove_new_lines(getattr(submission, 'selftext', '')),
         'spoiler'                 : getattr(submission, 'spoiler', None),
         'stickied'                : getattr(submission, 'stickied', None),
         'subreddit_id'            : getattr(submission, 'subreddit_id', None),
         'suggested_sort'          : getattr(submission, 'suggested_sort', None),
-        'title'                   : remove_new_lines(getattr(submission, 'title', '')),
+        'title'                   : helpers.remove_new_lines(getattr(submission, 'title', '')),
         'ups'                     : getattr(submission, 'ups', None),
         'url'                     : getattr(submission, 'url', None),
         'user_reports'            : getattr(submission, 'user_reports', None),
@@ -104,10 +80,9 @@ def get_submission(submission, interval):
         'whitelist_status'        : getattr(submission, 'whitelist_status', None),
         
         # custom fields ...
-        'author'                  : get_author(submission.author),
-        'interval'                : interval
+        'author'                  : get_author(submission.author)
     }
-	
+
 	
 def get_comment(comment, submissionId):
     return {
@@ -118,7 +93,7 @@ def get_comment(comment, submissionId):
         'author_flair_text'      : getattr(comment, 'author_flair_text', None),
         'banned_at_utc'          : getattr(comment, 'banned_at_utc', None),
         'banned_by'              : getattr(comment, 'banned_by', None),
-        'body'                   : remove_new_lines(getattr(comment, 'body', '')),
+        'body'                   : helpers.remove_new_lines(getattr(comment, 'body', '')),
         'can_gild'               : getattr(comment, 'can_gild', None),
         'can_mod_post'           : getattr(comment, 'can_mod_post', None),
         'collapsed'              : getattr(comment, 'collapsed', None),
@@ -158,34 +133,9 @@ def get_comment(comment, submissionId):
         'author'                 : get_author(comment.author)
     }
 
-
-def give_me_intervals(start_at):
-    full_day = 86400
-    period = (full_day * 3)
-
-    end_at = int(datetime.datetime.utcnow().timestamp())
-
-    end = start_at + period
-    yield (start_at, end)
-
-    padding = 1
-    while end <= end_at:
-        start_at = end + padding
-        end = (start_at - padding) + period
-        yield (start_at, end)
-
-
-def write_to_csv(output_directory, posts, comments, start_at, end_at):
-    posts_csv_path = r'{}/posts_{}_{}.csv'.format(output_directory, start_at, end_at)
-    if len(posts) > 0:
-        df_posts = pandas.DataFrame(posts)
-        df_posts.index.names = ['index']
-        df_posts.to_csv(posts_csv_path, header=True)
-    else:
-        with open(posts_csv_path, 'w') as posts_csv_file:
-            pass
-        
-    comments_csv_path = r'{}/comments_{}_{}.csv'.format(output_directory, start_at, end_at)
+	
+def write_to_csv(output_directory, comments, start_at, end_at):		
+    comments_csv_path = r'{}/comments_for_posts_{}_{}.csv'.format(output_directory, start_at, end_at)
     if len(comments) > 0:
         df_comments = pandas.DataFrame(comments)
         df_comments.index.names = ['index']
@@ -193,10 +143,3 @@ def write_to_csv(output_directory, posts, comments, start_at, end_at):
     else:
         with open(comments_csv_path, 'w') as comments_csv_file:
             pass
-
-
-def load_configuration(configuration_directory):
-    configuration = {}
-    with open(r'{}\config.json'.format(configuration_directory), 'r') as config_output:
-        configuration = json.loads(config_output.read())
-    return configuration
