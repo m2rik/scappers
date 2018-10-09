@@ -11,7 +11,7 @@ import luigi
 
 class RedditAggregateTask(luigi.Task):
     subreddit = luigi.Parameter('subreddit')
-    start_at = luigi.IntParameter('start-at')
+    start_at = luigi.IntParameter('start')
 
 
     def requires(self):
