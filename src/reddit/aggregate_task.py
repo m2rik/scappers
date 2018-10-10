@@ -61,8 +61,8 @@ class AggregateTask(luigi.Task):
 
 				else:
 
-					df = df.loc[:, ['author','selftext','id','title','created_utc','score','view_count', 'url']]
-					df.columns = ['author', 'selftext', 'postId', 'title', 'created_utc', 'score', 'view_count', 'url']
+					df = df.loc[:, ['author','selftext','id','title','created_utc','score','view_count']]
+					df.columns = ['author','selftext','postId','title','created_utc','score','view_count']
 					df['by_day'] = df.created_utc.map(lambda cu: time.strftime("%Y_%m_%d", time.gmtime(cu)))
 
 					for day in numpy.unique(df.by_day.values):

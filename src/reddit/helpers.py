@@ -15,7 +15,7 @@ def remove_new_lines(text):
 
 def is_file_empty(file):
     rows = 0
-    with open(file, 'r') as input_file:
+    with open(file, 'r', encoding='ascii', errors='ignore') as input_file:
         for line in input_file:
             rows += 1
     return rows == 0
