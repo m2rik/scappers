@@ -3,7 +3,7 @@ import helpers
 
 def get_author(author):
     if author == None:
-        return author
+        return '[deleted]'
 
     return author.name
 	

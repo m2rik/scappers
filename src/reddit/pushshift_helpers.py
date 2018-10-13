@@ -35,14 +35,23 @@ def write_to_csv(output_directory, posts, start_at, end_at):
 
 
 def pull_posts_for(subreddit, start_at, end_at):
-	uri = r'https://api.pushshift.io/reddit/search/submission?subreddit={}&after={}&before={}'.format(subreddit, start_at, end_at)
-	return map_posts(make_request(uri)['data'])
-	
-	
-def pull_comments_for(subreddit, start_at, end_at):
-	uri = r'https://api.pushshift.io/reddit/search/comment?subreddit={}&after={}&before={}'.format(subreddit, start_at, end_at)
-	return map_comments(make_request(uri)['data'])
-	
+	size = 500
+	uri = r'https://api.pushshift.io/reddit/search/submission?subreddit={}&after={}&before={}&size={}'.format(subreddit, start_at, end_at, size)
+	post_collections = map_posts(make_request(uri)['data'])
+
+	n = len(post_collections)
+	while n >= 500:
+		last = post_collections[-1]
+		new_start_at = last['created_utc']
+		
+		uri = r'https://api.pushshift.io/reddit/search/submission?subreddit={}&after={}&before={}&size={}'.format(subreddit, new_start_at, end_at, size)
+		more_posts = map_posts(make_request(uri)['data'])
+		post_collections.extend(more_posts)
+
+		n = len(more_posts)
+
+	return post_collections
+
 	
 def make_request(uri, max_retries = 5):
 	def fire_away(uri):
@@ -61,45 +70,11 @@ def make_request(uri, max_retries = 5):
 
 	return fire_away(uri)
 
-	
+
 def map_posts(posts):
-	mapped_collection = []
-	if len(posts) == 0:
-		return mapped_collection
+	return list(map(lambda post: {
+		'id': post['id'],
+		'created_utc': post['created_utc'],
+		'prefix': 't4_'
+	}, posts))
 
-	for post in posts:
-		mapped_collection.append({
-			'author': post['author'],
-			'is_self': post['is_self'],
-			'selftext': helpers.remove_new_lines(getattr(post, 'selftext', '')),
-			'url': getattr(post, 'url', ''),
-			'title': helpers.remove_new_lines(getattr(post, 'title', '')),
-			'created_utc': post['created_utc'],
-			'id': post['id'],
-			'score': post['score'],
-			'subreddit': post['subreddit'],
-			'num_comments': post['num_comments'],
-			'prefix': 't4_'
-		})
-
-	return mapped_collection
-	
-	
-def map_comments(comments):
-	mapped_collection = []
-	if len(comments) == 0:
-		return mapped_collection
-
-	for comment in comments:
-		mapped_collection.append({
-			'author': comment['author'],
-			'body': helpers.remove_new_lines(comment['body']),
-			'created_utc': comment['created_utc'],
-			'id': comment['id'],
-			'link_id': comment['link_id'],
-			'score': comment['score'],
-			'subreddit': comment['subreddit'],
-			'prefix': 't1_'
-		})
-
-	return mapped_collection

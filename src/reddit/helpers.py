@@ -10,12 +10,12 @@ def load_configuration(configuration_directory):
 	
 
 def remove_new_lines(text):
-	return text.replace('\r\n', '\n').replace('\r', '\n').replace('\n', ' ').encode('ascii', 'ignore').decode('ascii')
+	return text.replace('\r\n', '\n').replace('\r', '\n').replace('\n', ' ')
 
 
 def is_file_empty(file):
     rows = 0
-    with open(file, 'r', encoding='ascii', errors='ignore') as input_file:
+    with open(file, 'r', encoding='utf-8', errors='ignore') as input_file:
         for line in input_file:
             rows += 1
     return rows == 0

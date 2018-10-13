@@ -56,7 +56,7 @@ class AggregateTask(luigi.Task):
 							header = False
 				
 						q1 = df.by_day == day
-						with open(file_path, flag) as output:
+						with open(file_path, flag,  encoding='utf-8') as output:
 							df.loc[q1, ['author', 'body', 'commentId', 'created_utc', 'postId', 'score']].to_csv(output, header=header, index=False)
 
 				else:
@@ -76,8 +76,8 @@ class AggregateTask(luigi.Task):
 							header = False
 
 						q1 = df.by_day == day
-						with open(file_path, flag) as output:
-							df.loc[q1, ['author', 'created_utc', 'postId', 'score', 'selftext', 'title', 'url', 'view_count']].to_csv(output, header=header, index=False)
+						with open(file_path, flag, encoding='utf-8') as output:
+							df.loc[q1, ['author', 'created_utc', 'postId', 'score', 'selftext', 'title', 'view_count']].to_csv(output, header=header, index=False)
 
 				input_file.remove()
 			
