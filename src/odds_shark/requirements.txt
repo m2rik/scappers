@@ -1,5 +1,0 @@
-
-pip install bs4
-pip install datetime
-
-pip install luigi
